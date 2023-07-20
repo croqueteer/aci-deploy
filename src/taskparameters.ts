@@ -45,7 +45,7 @@ export class TaskParameters {
             });
         }
         this._cpu = parseFloat(core.getInput('cpu'));
-        this._dnsNameLabel = core.getInput('dns-name-label', { required: true });
+        this._dnsNameLabel = core.getInput('dns-name-label');
         this._diagnostics = {}
         let logType = core.getInput('log-type');
         let logAnalyticsWorkspace = core.getInput('log-analytics-workspace');
@@ -71,6 +71,10 @@ export class TaskParameters {
         if(!["Private", "Public"].includes(ipAddress)) {
             throw Error('The Value of IP Address must be either Public or Private');
         } else {
+            if ("Public" === ipAddress && this.dnsNameLabel == null)
+            {
+                throw Error("The Value of DNS Name Label must be set if IP Address is set to Public");
+            }
             this._ipAddress = (ipAddress == 'Public') ? 'Public' : 'Private';
         }
         this._location = core.getInput('location', { required: true });
